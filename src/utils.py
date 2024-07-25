@@ -1,22 +1,33 @@
 import os
 import requests
+import warnings
 from urllib.parse import urlparse
 from bs4 import BeautifulSoup
+from typing import Literal, Callable, Union
+from dotenv import load_dotenv
 
 
-HEADER=(
+load_dotenv()
+
+
+REQUEST_HEADER=(
     {
         "User-Agent": "Mozilla/5.0 (X11; Linux x86_64; rv:12.0) Gecko/20100101 Firefox/12.0"
     }
 )
 
 
-def get_url(url: str, get_raw_data: bool = False):
-    response = requests.get(url, headers=HEADER)
+def get_url(url: str,
+            get_raw_data: bool = False,
+            check_url: Callable[[str], bool] = None) -> Union[BeautifulSoup, str]:
+    response = requests.get(url, headers=REQUEST_HEADER)
     if not response.ok:
         response.raise_for_status()
     
-    if get_raw_data:
+    if check_url is not None and check_url(response.url) == False:
+        return None
+    
+    if not get_raw_data:
         return BeautifulSoup(response.content, 'html.parser')
     return response.content
 
@@ -44,3 +55,15 @@ def get_file_name_from_url(url: str):
     file_name = os.path.basename(path)
 
     return file_name
+
+
+def get_media_path(audio_file_name: str, media_type: Literal['audio', 'image'] = 'audio'):
+    if media_type == 'audio':
+        dir_path = os.getenv('PRONOUNCE_PATH')
+    else:
+        dir_path = os.path.join(os.getenv('COLLECTION_MEDIA_PATH'), os.getenv('ILLUSTRATIVE_IMAGE_PATH'))
+
+    if not os.path.exists(dir_path):
+        os.makedirs(dir_path)
+
+    return os.path.join(dir_path, audio_file_name)
