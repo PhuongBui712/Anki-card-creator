@@ -11,3 +11,6 @@ This project aims at creating an automatically scraper which helps users crawl E
 - **Automatic Data Insertion:** Seamlessly inserts audio and visual media (images) into Anki's media collections, enriching the learning process.
 
 ## Future works
+
+- Diversify kind of vocabulary: Idiom, Phrasal verb, Slang, etc.
+- Scraping vocab on different dictionaries: Oxford, etc. (Now, only get data on Cambridge)
