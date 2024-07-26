@@ -76,7 +76,7 @@ def get_word_panel_by_type(
     if word_page_src is not None:
         # select panel by word types
         word_panels = word_page_src.find_all(
-            "div", {"class": "pr dictionary", "role": "tabpanel"}
+            "div", {"class": "pr entry-body__el"}
         )
         res_panel = word_panels[0]
         if word_type:
@@ -143,12 +143,12 @@ def get_examples(soup: BeautifulSoup, max_example: int = 5):
         exp_usecase = ""
 
         # handle usecase
-        use_case = exp.find("span", "lu dlu") or exp.find("a", "lu dlu")
+        use_case = exp.find("span", "gram dgram") or exp.find("a", "lu dlu")
         if use_case:
             exp_usecase += f'<span class="example_usecase">{use_case.text}</span>'
 
         # handle example sentence
-        exp_sentence = ""
+        exp_sentence = "  "
         exp_sentence_tag = exp.find("span", "eg deg")
         for child in exp_sentence_tag.children:
             if isinstance(child, NavigableString):

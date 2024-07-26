@@ -36,7 +36,7 @@ def get_url(url: str,
         response.raise_for_status()
 
     if check_url is not None and check_url(url, response.url) == False:
-        warnings.warn(f'Error happened when connect to {url}', UserWarning)
+        warnings.warn(f'Error happened when connecting to {url}', UserWarning)
         return None
     
     if not get_raw_data:

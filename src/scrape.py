@@ -1,3 +1,5 @@
+import os
+import csv
 import argparse
 import pandas as pd
 
@@ -31,9 +33,11 @@ if __name__ == '__main__':
     args = parse_args()
     
     # crawling
-    vocabs = pd.read_csv(args['input'], names=INPUT_HEADER)
+    vocabs = pd.read_csv(args.input, names=INPUT_HEADER)
 
-    new_vocabs, latest_vocabs = scrape_vocab(vocabs, args['error'])
+    if os.path.exists(args.vocabulary_store):
+        new_vocabs, latest_vocabs = scrape_vocab(vocabs, args.vocabulary_store)
+    new_vocabs, latest_vocabs = scrape_vocab(vocabs)
 
     # save output
     if isinstance(new_vocabs, tuple):
@@ -41,6 +45,10 @@ if __name__ == '__main__':
     else:
         incorrect_vocabs = None
 
-    new_vocabs.to_csv(args['output'], index=False, header=False)
+    new_vocabs.to_csv(args.output, index=False, header=False, quoting=csv.QUOTE_ALL)
     if incorrect_vocabs is not None:
-        incorrect_vocabs.to_csv(args['error'], index=False, header=False)
+        incorrect_vocabs.to_csv(args.error, index=False, header=False, quoting=csv.QUOTE_ALL)
+
+    # update latest vocabulary store
+    if args.vocabulary_store is not None:
+        latest_vocabs.to_csv(args.vocabulary_store, header=False, index=False, quoting=csv.QUOTE_ALL)
