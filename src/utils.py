@@ -17,14 +17,26 @@ REQUEST_HEADER=(
 )
 
 
+def incorrect_url_warning(message, category, filename, lineno, line=None):
+    return f'{category.__name__}: {message}\n'
+# Set the custom warning format
+warnings.formatwarning = incorrect_url_warning
+
+
+
+def check_url(input_url: str, response_url: str) -> bool:
+    return input_url == response_url
+
+
 def get_url(url: str,
             get_raw_data: bool = False,
-            check_url: Callable[[str], bool] = None) -> Union[BeautifulSoup, str]:
+            check_url: Callable[[str, str], bool] = check_url) -> Union[BeautifulSoup, str]:
     response = requests.get(url, headers=REQUEST_HEADER)
     if not response.ok:
         response.raise_for_status()
-    
-    if check_url is not None and check_url(response.url) == False:
+
+    if check_url is not None and check_url(url, response.url) == False:
+        warnings.warn(f'Error happened when connect to {url}', UserWarning)
         return None
     
     if not get_raw_data:
