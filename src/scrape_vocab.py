@@ -25,8 +25,10 @@ def get_full_word_type(word_type: str) -> str:
         res = "verb"
     elif word_type == "adj":
         res = "adjective"
-    else:
+    elif word_type == 'adv':
         res = "adverb"
+    else:
+        return word_type
 
     return res
 
