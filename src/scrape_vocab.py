@@ -96,6 +96,7 @@ def get_sound(
     dictionary_url: str = CAMBRIDGE_URL,
     pronunciation_type: Literal["uk", "us"] = "us",
 ) -> str:
+    span_tags = soup.find_all('')
     # get all download source
     source_tags = soup.find_all("source")
     audio_url = source_tags[0]["src"]
@@ -119,7 +120,10 @@ def get_phonetic(soup) -> str:
     phonetic = None
     phonetic_tags = soup.find_all("span", {"class": "pron dpron"})
     if phonetic_tags:
-        return phonetic_tags[1].get_text()
+        try:
+            phonetic = phonetic_tags[1].get_text()
+        except:
+            phonetic = phonetic_tags[0].get_text()
 
     return phonetic
 
@@ -193,6 +197,7 @@ def scrape_vocab(vocabs: DataFrame, scraped_vocab_path: Optional[str] = None):
     # preprocess
     vocabs["vocabulary"] = vocabs.vocabulary.str.lower()
     vocabs["type"] = vocabs.type.apply(lambda x: get_full_word_type(x))
+    vocabs['vietnamese meaning'] = vocabs['vietnamese meaning'].str.replace('\n', '<br>')
 
     # check existence
     new_vocabs = vocabs.copy()
@@ -235,6 +240,7 @@ def scrape_vocab(vocabs: DataFrame, scraped_vocab_path: Optional[str] = None):
         and len(engmean) == common_len
         and len(example) == common_len
     ), "Appearing error(s) while scrapeing"
+
     # filter unscrawled word
     new_vocabs = new_vocabs.iloc[[i for i in range(len(new_vocabs)) if i not in unscrawled_idx]]
     for data, col in zip(

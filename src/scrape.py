@@ -35,7 +35,7 @@ if __name__ == '__main__':
     # crawling
     vocabs = pd.read_csv(args.input, names=INPUT_HEADER)
 
-    if os.path.exists(args.vocabulary_store):
+    if args.vocabulary_store is not None and os.path.exists(args.vocabulary_store):
         new_vocabs, latest_vocabs = scrape_vocab(vocabs, args.vocabulary_store)
     new_vocabs, latest_vocabs = scrape_vocab(vocabs)
 
@@ -47,8 +47,8 @@ if __name__ == '__main__':
 
     new_vocabs.to_csv(args.output, index=False, header=False, quoting=csv.QUOTE_ALL)
     if incorrect_vocabs is not None:
-        incorrect_vocabs.to_csv(args.error, index=False, header=False, quoting=csv.QUOTE_ALL)
+        incorrect_vocabs.to_csv(args.error, index=False, header=False, quoting=csv.QUOTE_ALL, mode='a')
 
     # update latest vocabulary store
     if args.vocabulary_store is not None:
-        latest_vocabs.to_csv(args.vocabulary_store, header=False, index=False, quoting=csv.QUOTE_ALL)
+        latest_vocabs.to_csv(args.vocabulary_store, header=False, index=False, quoting=csv.QUOTE_ALL, mode='a')
