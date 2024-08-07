@@ -37,7 +37,8 @@ if __name__ == '__main__':
 
     if args.vocabulary_store is not None and os.path.exists(args.vocabulary_store):
         new_vocabs, latest_vocabs = scrape_vocab(vocabs, args.vocabulary_store)
-    new_vocabs, latest_vocabs = scrape_vocab(vocabs)
+    else:
+        new_vocabs, latest_vocabs = scrape_vocab(vocabs)
 
     # save output
     if isinstance(new_vocabs, tuple):
