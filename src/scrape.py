@@ -1,25 +1,29 @@
-import os
-import csv
 import argparse
+import csv
+import os
+
 import pandas as pd
 
-from scrape_vocab import scrape_vocab
 from global_var import *
+from scrape_vocab import scrape_vocab
+
 
 def parse_args():
-    parser = argparse.ArgumentParser(description='Scrape vocabularies from an online dictionary.')
+    parser = argparse.ArgumentParser(
+        description="Scrape vocabularies from an online dictionary."
+    )
 
     # positional argument
-    parser.add_argument('input', type=str,
-                        help='Path to input csv file.')
-    parser.add_argument('output', type=str,
-                        help='Path of output csv file.')
-    parser.add_argument('error', type=str,
-                        help='Path of file storing elements when having error.')
-    
+    parser.add_argument("input", type=str, help="Path to input csv file.")
+    parser.add_argument("output", type=str, help="Path of output csv file.")
+    parser.add_argument(
+        "error", type=str, help="Path of file storing elements when having error."
+    )
+
     # optional arguments
-    parser.add_argument('--vocabulary-store', type=str, default=None,
-                        help='Path to vocabulary store.')
+    parser.add_argument(
+        "--vocabulary-store", type=str, default=None, help="Path to vocabulary store."
+    )
     # this optional will used for future features
     # parser.add_argument('-d', '--dictionary', type=str, default='cambridge',
     #                     help='Dictionary where to get vocabulary (cambridge or oxford)')
@@ -28,10 +32,10 @@ def parse_args():
     return parser.parse_args()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     # parse arguments
     args = parse_args()
-    
+
     # crawling
     vocabs = pd.read_csv(args.input, names=INPUT_HEADER)
 
@@ -48,8 +52,16 @@ if __name__ == '__main__':
 
     new_vocabs.to_csv(args.output, index=False, header=False, quoting=csv.QUOTE_ALL)
     if incorrect_vocabs is not None:
-        incorrect_vocabs.to_csv(args.error, index=False, header=False, quoting=csv.QUOTE_ALL, mode='a')
+        incorrect_vocabs.to_csv(
+            args.error, index=False, header=False, quoting=csv.QUOTE_ALL, mode="a"
+        )
 
     # update latest vocabulary store
     if args.vocabulary_store is not None:
-        latest_vocabs.to_csv(args.vocabulary_store, header=False, index=False, quoting=csv.QUOTE_ALL, mode='a')
+        latest_vocabs.to_csv(
+            args.vocabulary_store,
+            header=False,
+            index=False,
+            quoting=csv.QUOTE_ALL,
+            mode="a",
+        )
